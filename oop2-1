@@ -1,0 +1,133 @@
+#1.1
+from abc import ABC, abstractmethod
+
+class Callreport:
+    def __call__(self):
+        print("callreport")
+
+class CLsave(Callreport):
+    def save(self):
+        print("saved")
+
+
+#1.2
+class Subscriber:
+    def __data__(self):
+        pass
+
+class userdata(Subscriber):
+    def __get__(self, data):
+        self.data = data
+
+class message(Subscriber):
+    def __send__(self, messagesend):
+        self.messagesend = messagesend
+
+class balance(Subscriber):
+    def __value__(self, val):
+        self.val = val
+        print(val)
+
+
+#2.1/2.2
+class Tariff:
+    def price(self, minutes):
+        return 0
+
+class BasicTariff(Tariff):
+    def price(self, minutes):
+        return minutes * 1
+
+class NightTariff(Tariff):
+    def price(self, minutes):
+        return minutes * 0.5
+
+class VoiceTariff(Tariff):
+    def price(self, kb):
+        return kb * 20
+
+
+class RoamingTariff(Tariff):
+    def price(self, kb):
+        return kb * 20
+
+
+#3.1/3.2
+class NetworkConnection:
+    def connect(self):
+        print("Підключення до мережі")
+
+class WiFiConnection(NetworkConnection):
+    def connect(self):
+        print("WiFi підключено")
+
+class LTEConnection(NetworkConnection):
+    def connect(self):
+        print("LTE підключено")
+
+class SatteliteConnection(NetworkConnection):
+    def connect(self):
+        print("sat підключено")
+
+
+#4.1
+class TelecomDevice:
+    def overall(self):
+        return 0
+
+class Caller(TelecomDevice):
+    def make_call():
+        print("call")
+
+class sender(TelecomDevice):
+    def send_sms():
+        print("sms")
+
+class connector(TelecomDevice):
+    def connect_to_network():
+        print("connection")
+
+
+#4.2
+class DataTransmitter(ABC):
+
+    @abstractmethod
+    def transmit(self, data):
+        pass
+
+
+#5.1
+from abc import ABC, abstractmethod
+
+class Logger(ABC):
+
+    @abstractmethod
+    def log(self, message: str):
+        pass
+
+
+class FileLogger(Logger):
+
+    def log(self, message: str):
+        print("Файл:", message)
+
+
+class ConsoleLogger(Logger):
+
+    def log(self, message: str):
+        print("Консоль:", message)
+
+
+class RemoteLogger(Logger):
+
+    def log(self, message: str):
+        print("Відправка на сервер:", message)
+
+
+class NetworkMonitor:
+
+    def __init__(self, logger: Logger):
+        self.logger = logger
+
+    def check(self):
+        self.logger.log("Мережа працює")
