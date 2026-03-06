@@ -1,0 +1,75 @@
+#1
+import pandas as pd
+df = pd.read_csv('Job Opportunities.csv') 
+print(df.head(3))
+
+print(df.tail(3))
+
+rows, columns = df.shape
+print(f'Кількість рядків: {rows}, Кількість стовпців: {columns}')
+memory_bytes = df.memory_usage(deep=True).sum()
+memory_megabytes = memory_bytes / (1024 ** 2)
+print(f'Набір даних займає {memory_megabytes:.2f} MB памяті')
+
+#2
+df.info()
+df.isnull() 
+df.isnull().sum()
+#3
+filtered_data = df[df ['Industry'] == 'Cloud Computing']
+print(filtered_data)
+filtered_data2=df[df ['Experience Level'] == 'Senior']
+print(filtered_data2)
+filtered_data3=df[(df ['Job Type'] == 'Full-Time') & (df ['Location'] == 'Manchester')]
+print(filtered_data3)
+#4
+df.sort_values(by='Salary Range', ascending=False)
+#5
+
+industry_stats = df.groupby("Industry").size()
+print(industry_stats)
+
+
+df['Salary_Numeric'] = df['Salary Range'].str.extract(r'(\d+,?\d*)')[0].str.replace(',', '').astype(int)
+
+minsalary_sorted = df.sort_values(by='Salary_Numeric', ascending=False)
+print (minsalary_sorted)
+
+def get_avg_salary(salary_text):
+    parts = salary_text.split('-')
+    min_val = int(parts[0].replace('£', '').replace(',', '').strip())
+    max_val = int(parts[1].replace('£', '').replace(',', '').strip())
+    return (min_val + max_val) / 2
+
+df['Avg_Salary'] = df['Salary Range'].apply(get_avg_salary)
+df_sorted = df.sort_values(by='Avg_Salary', ascending=False)
+
+print(df_sorted[['Job Title', 'Salary Range', 'Avg_Salary']].head(5))
+
+#6
+def get_max_salary(salary_text):
+    if pd.isna(salary_text):
+        return 0
+    clean_text = str(salary_text).replace('£', '').replace(',', '')
+    parts = clean_text.split('-')
+    target = parts[1] if len(parts) > 1 else parts[0]
+    return int(float(target.strip()))
+
+def categorize_salary(salary):
+    if salary <= 40000:
+        return 'Low'
+    elif 40001 <= salary <= 70000:
+        return 'Medium'
+    else:
+        return 'High'
+
+df['Max_Salary_Numeric'] = df['Salary Range'].apply(get_max_salary)
+df['Salary Category'] = df['Max_Salary_Numeric'].apply(categorize_salary)
+
+print(df[['Salary Range', 'Salary Category']].head(10))
+#7
+df['Date Posted'] = pd.to_datetime(df['Date Posted'])
+df['Year'] = df['Date Posted'].dt.year
+
+year_stats = df.groupby('Year').agg(vacancy_count=('Job Title', 'count'))
+print(year_stats)
